@@ -112,6 +112,8 @@ elif choice == "Prediksi":
 if st.button("Hapus Gambar"):
     st.session_state.uploaded_files = []  # Reset file yang diunggah
     st.session_state.results = []  # Reset hasil prediksi
-    st.session_state.reset_triggered = True  # Tandai bahwa reset telah dilakukan
-    st._set_query_params()  # Gunakan fungsi terbaru untuk refresh halaman
+    st.session_state.clear_trigger = True  # Tandai bahwa reset telah dilakukan
+    st.experimental_set_query_params(page="Prediksi")  # Refresh ke halaman Prediksi
+    st.success("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
+
 
