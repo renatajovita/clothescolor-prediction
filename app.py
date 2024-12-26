@@ -62,6 +62,7 @@ elif choice == "Prediksi":
     if st.button("Reset"):
         st.session_state.uploaded_files = []  # Clear all uploaded files
         st.session_state.results = []  # Clear all predictions
+        uploaded_files = None  # Clear file uploader state
         st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
     # File uploader for images
