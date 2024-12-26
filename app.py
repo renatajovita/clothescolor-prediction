@@ -64,23 +64,27 @@ elif choice == "Prediksi":
 
         results = []
         for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file)
+            try:
+                image = Image.open(uploaded_file)
+                with col1:
+                    st.image(image, caption="Gambar yang diunggah", use_column_width=True)
 
-            with col1:
-                st.image(image, caption="Gambar yang diunggah", use_column_width=True)
+                # Preprocess and predict
+                processed_image = preprocess_image(image)
+                st.write("Shape of processed image:", processed_image.shape)  # Debugging
 
-            # Preprocess and predict
-            processed_image = preprocess_image(image)
-            predictions = model.predict(processed_image)
-            predicted_label = np.argmax(predictions)
-            accuracy = np.max(predictions) * 100
+                predictions = model.predict(processed_image)
+                predicted_label = np.argmax(predictions)
+                accuracy = np.max(predictions) * 100
 
-            color_name = label_map[predicted_label]
-            results.append((uploaded_file.name, color_name, accuracy))
+                color_name = label_map[predicted_label]
+                results.append((uploaded_file.name, color_name, accuracy))
 
-            with col2:
-                st.write(f"**Warna:** {color_name}")
-                st.write(f"**Akurasi:** {accuracy:.2f}%")
+                with col2:
+                    st.write(f"**Warna:** {color_name}")
+                    st.write(f"**Akurasi:** {accuracy:.2f}%")
+            except ValueError as e:
+                st.error(f"Error memproses file {uploaded_file.name}: {e}")
 
         st.markdown("### Hasil Prediksi")
         for result in results:
@@ -88,3 +92,4 @@ elif choice == "Prediksi":
 
     if st.button("Hapus Gambar"):
         st.experimental_rerun()
+
