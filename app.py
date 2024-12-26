@@ -113,5 +113,5 @@ if st.button("Hapus Gambar"):
     st.session_state.uploaded_files = []  # Reset file yang diunggah
     st.session_state.results = []  # Reset hasil prediksi
     st.session_state.reset_triggered = True  # Tandai bahwa reset telah dilakukan
-    st.set_query_params()  # Gunakan fungsi terbaru untuk refresh halaman
+    st._set_query_params()  # Gunakan fungsi terbaru untuk refresh halaman
 
