@@ -58,53 +58,45 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Track reset state
-    if "reset_triggered" not in st.session_state:
-        st.session_state.reset_triggered = False
-
-    # Reset button logic
+    # Reset button to clear all uploaded files and predictions
     if st.button("Reset"):
         st.session_state.uploaded_files = []  # Clear all uploaded files
         st.session_state.results = []  # Clear all predictions
-        st.session_state.reset_triggered = True  # Set reset state
+        uploaded_files = None  # Clear file uploader state
         st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
-    # If reset triggered, skip file uploader and reset the flag
-    if st.session_state.reset_triggered:
-        st.session_state.reset_triggered = False  # Reset the flag
-    else:
-        # File uploader for images
-        uploaded_files = st.file_uploader(
-            "Unggah gambar pakaian (Maksimal 10 gambar)", 
-            type=["jpg", "jpeg", "png"], 
-            accept_multiple_files=True
-        )
+    # File uploader for images
+    uploaded_files = st.file_uploader(
+        "Unggah gambar pakaian (Maksimal 10 gambar)", 
+        type=["jpg", "jpeg", "png"], 
+        accept_multiple_files=True
+    )
 
-        # Save uploaded files to session state
-        if uploaded_files:
-            st.session_state.uploaded_files = uploaded_files
-            st.session_state.results = []  # Clear results for new uploads
+    # Save uploaded files to session state
+    if uploaded_files:
+        st.session_state.uploaded_files = uploaded_files
+        st.session_state.results = []  # Clear results for new uploads
 
-            # Process each uploaded file
-            for uploaded_file in uploaded_files:
-                image = Image.open(uploaded_file)
-                processed_image = preprocess_image(image)
+        # Process each uploaded file
+        for uploaded_file in uploaded_files:
+            image = Image.open(uploaded_file)
+            processed_image = preprocess_image(image)
 
-                # Model prediction
-                predictions = model.predict(processed_image)
-                predicted_label = np.argmax(predictions)
-                accuracy = np.max(predictions) * 100
-                color_name = label_map[predicted_label]
+            # Model prediction
+            predictions = model.predict(processed_image)
+            predicted_label = np.argmax(predictions)
+            accuracy = np.max(predictions) * 100
+            color_name = label_map[predicted_label]
 
-                # Save results in session state
-                st.session_state.results.append(
-                    {
-                        "file_name": uploaded_file.name,
-                        "color": color_name,
-                        "accuracy": accuracy,
-                        "image": image
-                    }
-                )
+            # Save results in session state
+            st.session_state.results.append(
+                {
+                    "file_name": uploaded_file.name,
+                    "color": color_name,
+                    "accuracy": accuracy,
+                    "image": image
+                }
+            )
 
     # Display predictions if results exist
     if st.session_state.results:
