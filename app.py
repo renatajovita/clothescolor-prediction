@@ -62,8 +62,7 @@ elif choice == "Prediksi":
     if st.button("Hapus Gambar"):
         st.session_state.uploaded_files = []  # Reset uploaded files
         st.session_state.results = []  # Reset predictions
-        st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
-        st.stop()  # Stop execution for a clean interface
+        st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru di bawah.")
 
     # File uploader for images
     uploaded_files = st.file_uploader(
