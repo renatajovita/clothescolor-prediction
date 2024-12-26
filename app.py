@@ -35,8 +35,6 @@ if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 if "results" not in st.session_state:
     st.session_state.results = []
-if "clear_trigger" not in st.session_state:
-    st.session_state.clear_trigger = False
 
 # Navigation menu
 menu = ["Overview", "Prediksi"]
@@ -55,8 +53,6 @@ if choice == "Overview":
         Klik tombol di bawah untuk mencoba fitur prediksi.
         """
     )
-    if st.button("Coba Prediksi Warna"):
-        st.experimental_set_query_params(page="Prediksi")
 
 # Prediction page
 elif choice == "Prediksi":
@@ -66,13 +62,8 @@ elif choice == "Prediksi":
     if st.button("Hapus Gambar"):
         st.session_state.uploaded_files = []  # Reset uploaded files
         st.session_state.results = []  # Reset predictions
-        st.session_state.clear_trigger = True  # Trigger reset
-        st.experimental_rerun()  # Reload page to clear interface
-
-    # Skip logic if reset just happened
-    if st.session_state.clear_trigger:
-        st.session_state.clear_trigger = False
-        st.stop()
+        st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
+        st.stop()  # Stop execution for a clean interface
 
     # File uploader for images
     uploaded_files = st.file_uploader(
