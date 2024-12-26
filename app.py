@@ -58,19 +58,10 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Instruction for resetting the application
-    st.markdown(
-        """
-        **Catatan**: Jika Anda ingin memulai ulang, klik **silang** pada gambar yang telah diunggah, 
-        lalu tekan tombol **Reset** untuk menghapus semua data dan memuat aplikasi dari awal.
-        """
-    )
-
-    # Reset button to clear all uploaded files and predictions
-    if st.button("Reset"):
+    # Reset all data button
+    if st.button("Reset Semua"):
         st.session_state.uploaded_files = []  # Clear all uploaded files
         st.session_state.results = []  # Clear all predictions
-        uploaded_files = None  # Clear file uploader state
         st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
     # File uploader for images
@@ -109,7 +100,15 @@ elif choice == "Prediksi":
     # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
-        for result in st.session_state.results:
+        for i, result in enumerate(st.session_state.results):
+            # Display image and prediction
             st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
             st.write(f"**Warna:** {result['color']}")
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
+
+            # Add delete button for each image
+            if st.button(f"Hapus Gambar {i+1}", key=f"delete_{i}"):
+                # Remove the specific result and file
+                st.session_state.results.pop(i)
+                st.session_state.uploaded_files.pop(i)
+                st.experimental_rerun()  # Refresh the page to update UI
