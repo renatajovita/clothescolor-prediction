@@ -49,10 +49,13 @@ if choice == "Overview":
         - Mempermudah pengelolaan inventaris.
         - Memberikan pengalaman belanja yang lebih baik.
         - Menyediakan analisis akurat untuk warna produk: Merah, Kuning, Biru, Hitam, Putih.
-
-        Klik tombol di bawah untuk mencoba fitur prediksi.
         """
     )
+    
+    # Button to navigate to prediction page
+    if st.button("Coba Prediksi Sekarang"):
+        st.experimental_set_query_params(page="Prediksi")
+
 # Prediction page
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
