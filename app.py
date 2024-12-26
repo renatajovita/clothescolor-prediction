@@ -35,6 +35,8 @@ if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 if "results" not in st.session_state:
     st.session_state.results = []
+if "clear_trigger" not in st.session_state:
+    st.session_state.clear_trigger = False
 
 # Navigation menu
 menu = ["Overview", "Prediksi"]
@@ -58,12 +60,12 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Reset button to clear uploaded files and predictions
-    if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = []  # Reset uploaded files
-        st.session_state.results = []  # Reset predictions
+    # Check if reset trigger is active
+    if st.session_state.clear_trigger:
+        st.session_state.clear_trigger = False
+        st.session_state.uploaded_files = []
+        st.session_state.results = []
         st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
-        st.stop()  # Stop execution for a clean interface
 
     # File uploader for images
     uploaded_files = st.file_uploader(
@@ -105,3 +107,8 @@ elif choice == "Prediksi":
             st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
             st.write(f"**Warna:** {result['color']}")
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
+
+    # Reset button to clear uploaded files and predictions
+    if st.button("Hapus Gambar"):
+        st.session_state.clear_trigger = True
+        st.experimental_rerun()
