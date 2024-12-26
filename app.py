@@ -77,7 +77,12 @@ elif choice == "Prediksi":
             accept_multiple_files=True
         )
 
-        # Update session state when new files are uploaded
+        # Detect when files are removed (cross-button click)
+        if uploaded_files is None or len(uploaded_files) != len(st.session_state.uploaded_files):
+            st.session_state.uploaded_files = []  # Clear uploaded files
+            st.session_state.results = []  # Clear predictions
+
+        # Save uploaded files to session state
         if uploaded_files:
             st.session_state.uploaded_files = uploaded_files
 
@@ -93,7 +98,6 @@ elif choice == "Prediksi":
     if st.session_state.uploaded_files:
         st.session_state.results = []  # Reset results for new uploads
         for uploaded_file in st.session_state.uploaded_files:
-            # Open the image
             image = Image.open(uploaded_file)
             processed_image = preprocess_image(image)
 
@@ -116,15 +120,7 @@ elif choice == "Prediksi":
     # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
-        for i, result in enumerate(st.session_state.results):
-            col1, col2 = st.columns([4, 1])
-            with col1:
-                st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
-                st.write(f"**Warna:** {result['color']}")
-                st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
-            with col2:
-                # Add delete button for each prediction
-                if st.button(f"Hapus {result['file_name']}", key=f"delete_{i}"):
-                    # Remove the specific result and file
-                    st.session_state.results.pop(i)
-                    st.session_state.uploaded_files.pop(i)
+        for result in st.session_state.results:
+            st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
+            st.write(f"**Warna:** {result['color']}")
+            st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
