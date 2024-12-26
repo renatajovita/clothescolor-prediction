@@ -118,7 +118,7 @@ elif choice == "Prediksi":
                 }
             )
 
-    # Prediction page
+# Prediction page
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
