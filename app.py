@@ -40,6 +40,16 @@ if "results" not in st.session_state:
 menu = ["Overview", "Prediksi"]
 choice = st.sidebar.selectbox("Navigasi", menu)
 
+# Navigation menu
+menu = ["Overview", "Prediksi"]
+choice = st.sidebar.selectbox("Navigasi", menu)
+
+# Query parameter synchronization
+import streamlit as st
+
+if "page" in st.experimental_get_query_params():
+    choice = st.experimental_get_query_params()["page"][0]
+
 # Overview page
 if choice == "Overview":
     st.title("Sistem Klasifikasi Warna Matos Fashion")
@@ -54,8 +64,7 @@ if choice == "Overview":
 
     # Button to navigate to prediction page
     if st.button("Coba Prediksi Sekarang"):
-        # Update query parameter to navigate to the prediction page
-        st.query_params.from_dict({"page": "Prediksi"})
+        st.experimental_set_query_params(page=Prediksi**✅+**JSTILL✍_STREAM_ST]]>>
 
 # Prediction page
 elif choice == "Prediksi":
