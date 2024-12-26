@@ -121,15 +121,7 @@ elif choice == "Prediksi":
     # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
-        for i, result in enumerate(st.session_state.results):
-            col1, col2 = st.columns([4, 1])
-            with col1:
-                st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
-                st.write(f"**Warna:** {result['color']}")
-                st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
-            with col2:
-                # Add delete button for each prediction
-                if st.button(f"Hapus {result['file_name']}", key=f"delete_{i}"):
-                    # Remove the specific result and file
-                    st.session_state.results.pop(i)
-                    st.session_state.uploaded_files.pop(i)
+        for result in st.session_state.results:
+            st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
+            st.write(f"**Warna:** {result['color']}")
+            st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
