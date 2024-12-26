@@ -58,11 +58,10 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Reset button to clear everything
+    # Reset button to clear all uploaded files and predictions
     if st.button("Reset"):
-        # Clear session states for uploaded files and results
-        st.session_state.uploaded_files = []  
-        st.session_state.results = []  
+        st.session_state.uploaded_files = []  # Clear all uploaded files
+        st.session_state.results = []  # Clear all predictions
         st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
     # File uploader for images
@@ -75,7 +74,7 @@ elif choice == "Prediksi":
     # Save uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Reset results for new uploads
+        st.session_state.results = []  # Clear results for new uploads
 
         # Process each uploaded file
         for uploaded_file in uploaded_files:
