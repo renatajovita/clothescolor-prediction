@@ -2,118 +2,112 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import gdown
 import os
+import gdown
 
-# Set page configuration
-st.set_page_config(page_title="Klasifikasi Warna Matos Fashion", layout="wide")
+# Konfigurasi halaman
+st.set_page_config(page_title="Prediksi Warna Pakaian", layout="wide")
 
-# Google Drive model link and path
+# URL model dan path lokal
 MODEL_URL = "https://drive.google.com/uc?id=1bpm2Gp_qVqsBIMHw-kRlzHX0e3QNie70"
 MODEL_PATH = "color_model.h5"
 
-# Download the model if not present
+# Download model jika belum ada
 if not os.path.exists(MODEL_PATH):
     with st.spinner("Mengunduh model..."):
         gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
         st.success("Model berhasil diunduh!")
 
-# Load the model
+# Load model
 model = tf.keras.models.load_model(MODEL_PATH)
 
-# Map label indices to color names
+# Label warna
 label_map = {0: 'Merah', 1: 'Kuning', 2: 'Biru', 3: 'Hitam', 4: 'Putih'}
 
-# Function to preprocess the image
+# Fungsi preprocessing gambar
 def preprocess_image(image):
     image = image.resize((224, 224))
-    image = np.array(image) / 255.0  # Normalize
+    image = np.array(image) / 255.0  # Normalisasi
     return np.expand_dims(image, axis=0)
 
-# Initialize session states
+# Inisialisasi session state
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 if "results" not in st.session_state:
     st.session_state.results = []
-if "reset_triggered" not in st.session_state:
-    st.session_state.reset_triggered = False
+if "clear_trigger" not in st.session_state:
+    st.session_state.clear_trigger = False
 
-# Navigation menu
+# Navigasi
 menu = ["Overview", "Prediksi"]
 choice = st.sidebar.selectbox("Navigasi", menu)
 
-# Overview page
+# Halaman Overview
 if choice == "Overview":
-    st.title("Sistem Klasifikasi Warna Matos Fashion")
-    st.markdown(
-        """
-        Sistem klasifikasi otomatis warna pakaian menggunakan kecerdasan buatan:
-        - Mempermudah pengelolaan inventaris.
-        - Memberikan pengalaman belanja yang lebih baik.
-        - Menyediakan analisis akurat untuk warna produk: Merah, Kuning, Biru, Hitam, Putih.
+    st.title("Sistem Klasifikasi Warna Pakaian")
+    st.markdown("""
+    **Selamat datang di aplikasi prediksi warna pakaian!**
+    
+    - Unggah gambar pakaian Anda.
+    - Sistem akan memberikan prediksi warna berdasarkan model AI.
+    - Warna yang dapat diprediksi: Merah, Kuning, Biru, Hitam, Putih.
+    """)
 
-        Klik tombol di bawah untuk mencoba fitur prediksi.
-        """
-    )
-
-# Prediction page
+# Halaman Prediksi
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Handle reset if triggered
-    if st.session_state.reset_triggered:
+    # Tombol Hapus untuk reset
+    if st.session_state.clear_trigger:
         st.session_state.uploaded_files = []
         st.session_state.results = []
-        st.session_state.reset_triggered = False  # Reset the flag
-        st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
+        st.session_state.clear_trigger = False
+        st.experimental_rerun()  # Reload halaman
 
-    # File uploader for images
+    # File uploader
     uploaded_files = st.file_uploader(
-        "Unggah gambar pakaian (Maksimal 10 gambar)", 
-        type=["jpg", "jpeg", "png"], 
+        "Unggah gambar pakaian (Maksimal 10 gambar)",
+        type=["jpg", "jpeg", "png"],
         accept_multiple_files=True
     )
 
-    # Save uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Clear previous results
 
-        # Process each uploaded file
-        for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file)
-            processed_image = preprocess_image(image)
+        col1, col2 = st.columns(2)
+        results = []
 
-            # Model prediction
-            predictions = model.predict(processed_image)
-            predicted_label = np.argmax(predictions)
-            accuracy = np.max(predictions) * 100
-            color_name = label_map[predicted_label]
+        # Prediksi untuk setiap gambar yang diunggah
+        for uploaded_file in st.session_state.uploaded_files:
+            try:
+                image = Image.open(uploaded_file)
+                with col1:
+                    st.image(image, caption=f"Gambar: {uploaded_file.name}", use_column_width=True)
 
-            # Save results in session state
-            st.session_state.results.append(
-                {
-                    "file_name": uploaded_file.name,
-                    "color": color_name,
-                    "accuracy": accuracy,
-                    "image": image
-                }
-            )
+                # Preprocess dan prediksi
+                processed_image = preprocess_image(image)
+                predictions = model.predict(processed_image)
+                predicted_label = np.argmax(predictions)
+                accuracy = np.max(predictions) * 100
+                color_name = label_map[predicted_label]
+                results.append((uploaded_file.name, color_name, accuracy))
 
-    # Display predictions if results exist
+                with col2:
+                    st.write(f"**Warna:** {color_name}")
+                    st.write(f"**Akurasi:** {accuracy:.2f}%")
+
+            except Exception as e:
+                st.error(f"Terjadi error pada file {uploaded_file.name}: {e}")
+
+        st.session_state.results = results
+
+    # Tombol Hapus
+    if st.button("Hapus Gambar"):
+        st.session_state.clear_trigger = True
+        st.experimental_rerun()
+
+    # Menampilkan hasil prediksi
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
         for result in st.session_state.results:
-            st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
-            st.write(f"**Warna:** {result['color']}")
-            st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
-
-    # Reset button to clear uploaded files and predictions
-if st.button("Hapus Gambar"):
-    st.session_state.uploaded_files = []  # Reset file yang diunggah
-    st.session_state.results = []  # Reset hasil prediksi
-    st.session_state.clear_trigger = True  # Tandai bahwa reset telah dilakukan
-    st.query_params(page="Prediksi")  # Refresh ke halaman Prediksi
-    st.success("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
-
-
+            st.write(f"File: {result[0]} | Warna: {result[1]} | Akurasi: {result[2]:.2f}%")
