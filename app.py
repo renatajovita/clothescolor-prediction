@@ -30,11 +30,11 @@ def preprocess_image(image):
     image = np.array(image) / 255.0  # Normalize to [0, 1]
     return np.expand_dims(image, axis=0)
 
-# Initialize session state for uploaded files and results
+# Initialize session state for managing uploaded files and results
 if "uploaded_files" not in st.session_state:
-    st.session_state.uploaded_files = []
+    st.session_state.uploaded_files = None
 if "results" not in st.session_state:
-    st.session_state.results = []
+    st.session_state.results = None
 
 # Navigation
 menu = ["Overview", "Prediksi"]
@@ -61,24 +61,22 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Button to clear uploaded files and results
+    # Clear all session states on button click
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = []  # Reset uploaded files
-        st.session_state.results = []  # Reset prediction results
-        st.write("Gambar telah dihapus. Silakan unggah gambar baru.")
+        st.session_state.uploaded_files = None  # Clear uploaded files
+        st.session_state.results = None  # Clear results
+        st.experimental_rerun()  # Fully reload the page to clear the interface
 
     # File uploader
     uploaded_files = st.file_uploader(
         "Unggah gambar pakaian (Maksimal 10 gambar)", 
         type=["jpg", "jpeg", "png"], 
-        accept_multiple_files=True,
-        key="file_uploader"
+        accept_multiple_files=True
     )
 
-    # Process uploaded files
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Clear previous results
+        st.session_state.results = []  # Reset results for new predictions
 
         # Predict and store results
         for uploaded_file in st.session_state.uploaded_files:
