@@ -67,7 +67,7 @@ elif choice == "Prediksi":
             try:
                 image = Image.open(uploaded_file)
                 with col1:
-                    st.image(image, caption="Gambar yang diunggah", use_column_width=True)
+                    st.image(image, caption="Gambar yang diunggah", use_container_width=True)
 
                 # Preprocess and predict
                 processed_image = preprocess_image(image)
