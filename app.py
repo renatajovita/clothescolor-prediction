@@ -122,14 +122,14 @@ elif choice == "Prediksi":
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
         for i, result in enumerate(st.session_state.results):
-            # Display image and prediction
-            st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
-            st.write(f"**Warna:** {result['color']}")
-            st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
-
-            # Add delete button for each image
-            if st.button(f"Hapus Gambar {i+1}", key=f"delete_{i}"):
-                # Remove the specific result and file
-                st.session_state.results.pop(i)
-                st.session_state.uploaded_files.pop(i)
-                st.experimental_rerun()  # Refresh the page to update UI
+            col1, col2 = st.columns([4, 1])
+            with col1:
+                st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
+                st.write(f"**Warna:** {result['color']}")
+                st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
+            with col2:
+                # Add delete button for each prediction
+                if st.button(f"Hapus {result['file_name']}", key=f"delete_{i}"):
+                    # Remove the specific result and file
+                    st.session_state.results.pop(i)
+                    st.session_state.uploaded_files.pop(i)
