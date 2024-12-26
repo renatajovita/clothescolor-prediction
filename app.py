@@ -58,11 +58,11 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Reset all data button
-    if st.button("Reset Semua"):
-        st.session_state.uploaded_files = []  # Clear all uploaded files
-        st.session_state.results = []  # Clear all predictions
-        st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
+    # Check if reset state exists
+    if "uploaded_files" not in st.session_state:
+        st.session_state.uploaded_files = []
+    if "results" not in st.session_state:
+        st.session_state.results = []
 
     # File uploader for images
     uploaded_files = st.file_uploader(
@@ -71,12 +71,18 @@ elif choice == "Prediksi":
         accept_multiple_files=True
     )
 
+    # Detect when files are removed (cross-button click)
+    if uploaded_files is None or len(uploaded_files) != len(st.session_state.uploaded_files):
+        st.session_state.uploaded_files = []  # Clear uploaded files
+        st.session_state.results = []  # Clear predictions
+        st.info("Semua gambar dan hasil prediksi telah direset karena file dihapus.")
+
     # Save uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Clear results for new uploads
 
         # Process each uploaded file
+        st.session_state.results = []  # Reset results for new uploads
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
             processed_image = preprocess_image(image)
@@ -100,15 +106,7 @@ elif choice == "Prediksi":
     # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
-        for i, result in enumerate(st.session_state.results):
-            # Display image and prediction
+        for result in st.session_state.results:
             st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
             st.write(f"**Warna:** {result['color']}")
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
-
-            # Add delete button for each image
-            if st.button(f"Hapus Gambar {i+1}", key=f"delete_{i}"):
-                # Remove the specific result and file
-                st.session_state.results.pop(i)
-                st.session_state.uploaded_files.pop(i)
-                st.experimental_rerun()  # Refresh the page to update UI
