@@ -58,6 +58,14 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
+    # Instruction for resetting the application
+    st.markdown(
+        """
+        **Catatan**: Jika Anda ingin memulai ulang, klik **silang** pada gambar yang telah diunggah, 
+        lalu tekan tombol **Reset** untuk menghapus semua data dan memuat aplikasi dari awal.
+        """
+    )
+
     # Reset button to clear all uploaded files and predictions
     if st.button("Reset"):
         st.session_state.uploaded_files = []  # Clear all uploaded files
