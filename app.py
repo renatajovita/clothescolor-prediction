@@ -102,8 +102,8 @@ elif choice == "Prediksi":
             st.write(f"**Warna:** {result['color']}")
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
 
-    # Clear uploaded files and results
+    # Clear uploaded files and results without `st.experimental_rerun()`
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files.clear()  # Clear the list of uploaded files
-        st.session_state.results.clear()  # Clear the results
-        st.experimental_rerun()  # Reload the app
+        st.session_state.uploaded_files = []  # Clear the list of uploaded files
+        st.session_state.results = []  # Clear the results
+        st.info("Gambar telah dihapus. Silakan unggah gambar baru.")
