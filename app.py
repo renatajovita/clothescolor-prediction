@@ -109,6 +109,9 @@ elif choice == "Prediksi":
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
 
     # Reset button to clear uploaded files and predictions
-    if st.button("Hapus Gambar"):
-        st.session_state.reset_triggered = True
-        st.experimental_set_query_params()  # Simulate a page refresh
+if st.button("Hapus Gambar"):
+    st.session_state.uploaded_files = []  # Reset file yang diunggah
+    st.session_state.results = []  # Reset hasil prediksi
+    st.session_state.reset_triggered = True  # Tandai bahwa reset telah dilakukan
+    st.set_query_params()  # Gunakan fungsi terbaru untuk refresh halaman
+
