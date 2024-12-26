@@ -102,10 +102,8 @@ elif choice == "Prediksi":
 
     # Clear uploaded files and predictions
 if st.button("Hapus Gambar"):
-    if st.session_state.uploaded_files or st.session_state.predictions:
-        st.session_state.uploaded_files = []  # Clear uploaded files
-        st.session_state.predictions = []  # Clear predictions
-        st.experimental_rerun()  # Reload the app
-    else:
-        st.warning("Tidak ada gambar yang diunggah untuk dihapus.")
+    st.session_state.uploaded_files = []  # Clear uploaded files
+    st.session_state.predictions = []  # Clear predictions
+    st.experimental_rerun()  # Reload the app
+
 
