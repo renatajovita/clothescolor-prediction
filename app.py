@@ -35,6 +35,8 @@ if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = None
 if "results" not in st.session_state:
     st.session_state.results = None
+if "clear_page" not in st.session_state:
+    st.session_state.clear_page = False
 
 # Navigation
 menu = ["Overview", "Prediksi"]
@@ -63,9 +65,16 @@ elif choice == "Prediksi":
 
     # Clear all session states on button click
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = None  # Clear uploaded files
-        st.session_state.results = None  # Clear results
-        st.experimental_rerun()  # Fully reload the page to clear the interface
+        st.session_state.uploaded_files = None
+        st.session_state.results = None
+        st.session_state.clear_page = True
+        st.experimental_rerun()
+
+    # Jika halaman di-reset
+    if st.session_state.clear_page:
+        st.info("Gambar telah dihapus. Silakan unggah gambar baru.")
+        st.session_state.clear_page = False  # Reset flag agar bisa upload lagi
+        st.stop()  # Hentikan eksekusi setelah dihapus
 
     # File uploader
     uploaded_files = st.file_uploader(
