@@ -104,7 +104,7 @@ elif choice == "Prediksi":
     # Tombol Hapus
     if st.button("Hapus Gambar"):
         st.session_state.clear_trigger = True
-        st.experimental_rerun()
+        st.experimental_user()
 
     # Menampilkan hasil prediksi
     if st.session_state.results:
