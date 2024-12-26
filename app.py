@@ -40,16 +40,6 @@ if "results" not in st.session_state:
 menu = ["Overview", "Prediksi"]
 choice = st.sidebar.selectbox("Navigasi", menu)
 
-# Navigation menu
-menu = ["Overview", "Prediksi"]
-choice = st.sidebar.selectbox("Navigasi", menu)
-
-# Query parameter synchronization
-import streamlit as st
-
-if "page" in st.experimental_get_query_params():
-    choice = st.experimental_get_query_params()["page"][0]
-
 # Overview page
 if choice == "Overview":
     st.title("Sistem Klasifikasi Warna Matos Fashion")
@@ -61,11 +51,7 @@ if choice == "Overview":
         - Menyediakan analisis akurat untuk warna produk: Merah, Kuning, Biru, Hitam, Putih.
         """
     )
-
-    # Button to navigate to prediction page
-    if st.button("Coba Prediksi Sekarang"):
-        st.experimental_set_query_params(page=Prediksi**✅+**JSTILL✍_STREAM_ST]]>>
-
+    
 # Prediction page
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
