@@ -59,10 +59,10 @@ elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
     # Reset button to clear uploaded files and predictions
-    if st.button("Hapus Gambar"):
+    if st.button("Reset"):
         st.session_state.uploaded_files = []  # Reset uploaded files
         st.session_state.results = []  # Reset predictions
-        st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru di bawah.")
+        st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
     # File uploader for images
     uploaded_files = st.file_uploader(
