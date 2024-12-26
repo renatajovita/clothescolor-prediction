@@ -50,20 +50,31 @@ if choice == "Overview":
     )
     if st.button("Coba Prediksi Warna"):  
         st.experimental_set_query_params(page="Prediksi")
+# Initialize session state for uploaded files
+if "uploaded_files" not in st.session_state:
+    st.session_state.uploaded_files = []
 
 # Prediction page
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    uploaded_files = st.file_uploader("Unggah gambar pakaian (Maksimal 10 gambar)", 
-                                      type=["jpg", "jpeg", "png"], 
-                                      accept_multiple_files=True)
+    # File uploader
+    uploaded_files = st.file_uploader(
+        "Unggah gambar pakaian (Maksimal 10 gambar)", 
+        type=["jpg", "jpeg", "png"], 
+        accept_multiple_files=True
+    )
 
+    # Add new uploaded files to session state
     if uploaded_files:
+        st.session_state.uploaded_files.extend(uploaded_files)
+
+    # Display uploaded files and predictions
+    if st.session_state.uploaded_files:
         col1, col2 = st.columns(2)
 
         results = []
-        for uploaded_file in uploaded_files:
+        for uploaded_file in st.session_state.uploaded_files:
             try:
                 image = Image.open(uploaded_file)
                 with col1:
@@ -90,6 +101,7 @@ elif choice == "Prediksi":
         for result in results:
             st.write(f"File: {result[0]} | Warna: {result[1]} | Akurasi: {result[2]:.2f}%")
 
+    # Clear uploaded files
     if st.button("Hapus Gambar"):
-        st.experimental_rerun()
-
+        st.session_state.uploaded_files = []  # Clear the list of uploaded files
+        st.experimental_rerun()  # Reload the app
