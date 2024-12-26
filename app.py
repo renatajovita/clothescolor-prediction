@@ -2,9 +2,21 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+import gdown
+import os
+
+# URL Google Drive
+MODEL_URL = "https://drive.google.com/uc?id=1bpm2Gp_qVqsBIMHw-kRlzHX0e3QNie70"
+MODEL_PATH = "color_model.h5"
+
+# Download the model if it doesn't exist
+if not os.path.exists(MODEL_PATH):
+    with st.spinner("Mengunduh model..."):
+        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+        st.success("Model berhasil diunduh!")
 
 # Load the model
-model = tf.keras.models.load_model('color_model.h5')
+model = tf.keras.models.load_model(MODEL_PATH)
 
 # Map label indices to color names
 label_map = {0: 'Merah', 1: 'Kuning', 2: 'Biru', 3: 'Hitam', 4: 'Putih'}
