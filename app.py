@@ -32,7 +32,7 @@ def preprocess_image(image):
 
 # Initialize session state
 if "uploaded_files" not in st.session_state:
-    st.session_state.uploaded_files = []
+    st.session_state.uploaded_files = None
 if "results" not in st.session_state:
     st.session_state.results = []
 
@@ -102,8 +102,8 @@ elif choice == "Prediksi":
             st.write(f"**Warna:** {result['color']}")
             st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
 
-    # Clear uploaded files and results without `st.experimental_rerun()`
+    # Clear uploaded files and results
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = []  # Clear the list of uploaded files
+        st.session_state.uploaded_files = None  # Reset the uploaded files
         st.session_state.results = []  # Clear the results
-        st.info("Gambar telah dihapus. Silakan unggah gambar baru.")
+        st.experimental_rerun()  # Reload the app to clear the interface
