@@ -30,13 +30,13 @@ def preprocess_image(image):
     image = np.array(image) / 255.0  # Normalize
     return np.expand_dims(image, axis=0)
 
-# Initialize session states for uploaded files and results
+# Initialize session states
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 if "results" not in st.session_state:
     st.session_state.results = []
-if "clear_trigger" not in st.session_state:
-    st.session_state.clear_trigger = False
+if "reset_triggered" not in st.session_state:
+    st.session_state.reset_triggered = False
 
 # Navigation menu
 menu = ["Overview", "Prediksi"]
@@ -60,11 +60,11 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Check if reset trigger is active
-    if st.session_state.clear_trigger:
-        st.session_state.clear_trigger = False
+    # Handle reset if triggered
+    if st.session_state.reset_triggered:
         st.session_state.uploaded_files = []
         st.session_state.results = []
+        st.session_state.reset_triggered = False  # Reset the flag
         st.info("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
 
     # File uploader for images
@@ -77,7 +77,7 @@ elif choice == "Prediksi":
     # Save uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Reset results for new uploads
+        st.session_state.results = []  # Clear previous results
 
         # Process each uploaded file
         for uploaded_file in uploaded_files:
@@ -110,5 +110,5 @@ elif choice == "Prediksi":
 
     # Reset button to clear uploaded files and predictions
     if st.button("Hapus Gambar"):
-        st.session_state.clear_trigger = True
-        st.experimental_rerun()
+        st.session_state.reset_triggered = True
+        st.experimental_set_query_params()  # Simulate a page refresh
