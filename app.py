@@ -58,10 +58,10 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Reset button to clear uploaded files and predictions
+    # Reset button to clear all uploaded files and predictions
     if st.button("Reset"):
-        st.session_state.uploaded_files = []  # Reset uploaded files
-        st.session_state.results = []  # Reset predictions
+        st.session_state.uploaded_files = []  # Reset all uploaded files
+        st.session_state.results = []  # Reset all results
         st.info("Semua gambar dan hasil prediksi telah direset. Silakan unggah gambar baru.")
 
     # File uploader for images
@@ -100,7 +100,21 @@ elif choice == "Prediksi":
     # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
-        for result in st.session_state.results:
-            st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
-            st.write(f"**Warna:** {result['color']}")
-            st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
+
+        # Display each result with a "Remove" button
+        for index, result in enumerate(st.session_state.results):
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.image(result["image"], caption=f"Gambar: {result['file_name']}", use_container_width=True)
+                st.write(f"**Warna:** {result['color']}")
+                st.write(f"**Akurasi:** {result['accuracy']:.2f}%")
+            with col2:
+                if st.button(f"Hapus Gambar {index + 1}", key=f"remove_{index}"):
+                    # Remove the specific result and associated file
+                    st.session_state.results.pop(index)
+                    st.session_state.uploaded_files.pop(index)
+                    st.experimental_rerun()  # Refresh the app state to reflect the change
+
+    # Provide file uploader again in case some images are removed
+    if not st.session_state.results and not st.session_state.uploaded_files:
+        st.info("Tidak ada gambar yang diunggah. Silakan unggah gambar baru.")
