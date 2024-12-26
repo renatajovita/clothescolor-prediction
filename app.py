@@ -32,7 +32,7 @@ def preprocess_image(image):
 
 # Initialize session states for uploaded files and results
 if "uploaded_files" not in st.session_state:
-    st.session_state.uploaded_files = None
+    st.session_state.uploaded_files = []
 if "results" not in st.session_state:
     st.session_state.results = []
 
@@ -60,11 +60,11 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Button to reset predictions and clear results
+    # Reset button to clear uploaded files and predictions
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = None  # Clear uploaded files
-        st.session_state.results = []  # Clear results
-        st.success("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
+        st.session_state.uploaded_files = []  # Reset uploaded files
+        st.session_state.results = []  # Reset predictions
+        st.experimental_rerun()  # Reload page to clear interface
 
     # File uploader for images
     uploaded_files = st.file_uploader(
