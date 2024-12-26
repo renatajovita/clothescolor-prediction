@@ -64,25 +64,41 @@ elif choice == "Prediksi":
     if "results" not in st.session_state:
         st.session_state.results = []
 
-    # File uploader for images
-    uploaded_files = st.file_uploader(
-        "Unggah gambar pakaian (Maksimal 10 gambar)", 
-        type=["jpg", "jpeg", "png"], 
-        accept_multiple_files=True
+    # Opsi untuk memilih sumber input gambar
+    input_choice = st.radio(
+        "Pilih sumber gambar:", 
+        ("Unggah Gambar", "Gunakan Kamera")
     )
 
-    # Detect when files are removed (cross-button click)
-    if uploaded_files is None or len(uploaded_files) != len(st.session_state.uploaded_files):
-        st.session_state.uploaded_files = []  # Clear uploaded files
-        st.session_state.results = []  # Clear predictions
+    if input_choice == "Unggah Gambar":
+        # File uploader for images
+        uploaded_files = st.file_uploader(
+            "Unggah gambar pakaian (Maksimal 10 gambar)", 
+            type=["jpg", "jpeg", "png"], 
+            accept_multiple_files=True
+        )
 
-    # Save uploaded files to session state
-    if uploaded_files:
-        st.session_state.uploaded_files = uploaded_files
+        # Detect when files are removed (cross-button click)
+        if uploaded_files is None or len(uploaded_files) != len(st.session_state.uploaded_files):
+            st.session_state.uploaded_files = []  # Clear uploaded files
+            st.session_state.results = []  # Clear predictions
 
-        # Process each uploaded file
+        # Save uploaded files to session state
+        if uploaded_files:
+            st.session_state.uploaded_files = uploaded_files
+
+    elif input_choice == "Gunakan Kamera":
+        # Camera input
+        camera_image = st.camera_input("Ambil gambar menggunakan kamera")
+
+        if camera_image:
+            # Save the captured image to session state
+            st.session_state.uploaded_files = [camera_image]
+
+    # Process images if available
+    if st.session_state.uploaded_files:
         st.session_state.results = []  # Reset results for new uploads
-        for uploaded_file in uploaded_files:
+        for uploaded_file in st.session_state.uploaded_files:
             image = Image.open(uploaded_file)
             processed_image = preprocess_image(image)
 
@@ -95,7 +111,7 @@ elif choice == "Prediksi":
             # Save results in session state
             st.session_state.results.append(
                 {
-                    "file_name": uploaded_file.name,
+                    "file_name": "Kamera" if input_choice == "Gunakan Kamera" else uploaded_file.name,
                     "color": color_name,
                     "accuracy": accuracy,
                     "image": image
