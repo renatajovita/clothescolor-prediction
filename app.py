@@ -72,7 +72,7 @@ elif choice == "Prediksi":
     if input_choice == "Unggah Gambar":
         # File uploader for images
         uploaded_files = st.file_uploader(
-            "Unggah gambar pakaian (Maksimal 10 gambar)", 
+            "Unggah gambar pakaian", 
             type=["jpg", "jpeg", "png"], 
             accept_multiple_files=True
         )
