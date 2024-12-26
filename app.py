@@ -30,13 +30,11 @@ def preprocess_image(image):
     image = np.array(image) / 255.0  # Normalize to [0, 1]
     return np.expand_dims(image, axis=0)
 
-# Initialize session state for managing uploaded files and results
+# Initialize session states for handling files and results
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = None
 if "results" not in st.session_state:
-    st.session_state.results = None
-if "clear_page" not in st.session_state:
-    st.session_state.clear_page = False
+    st.session_state.results = []
 
 # Navigation
 menu = ["Overview", "Prediksi"]
@@ -63,32 +61,25 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Clear all session states on button click
+    # Handle "Hapus Gambar" button
     if st.button("Hapus Gambar"):
         st.session_state.uploaded_files = None
-        st.session_state.results = None
-        st.session_state.clear_page = True
-        st.experimental_rerun()
-
-    # Jika halaman di-reset
-    if st.session_state.clear_page:
-        st.info("Gambar telah dihapus. Silakan unggah gambar baru.")
-        st.session_state.clear_page = False  # Reset flag agar bisa upload lagi
-        st.stop()  # Hentikan eksekusi setelah dihapus
+        st.session_state.results = []
+        st.experimental_rerun()  # Reload the page to clear all predictions
 
     # File uploader
     uploaded_files = st.file_uploader(
-        "Unggah gambar pakaian (Maksimal 10 gambar)", 
-        type=["jpg", "jpeg", "png"], 
+        "Unggah gambar pakaian (Maksimal 10 gambar)",
+        type=["jpg", "jpeg", "png"],
         accept_multiple_files=True
     )
 
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Reset results for new predictions
+        st.session_state.results = []  # Clear previous results for new uploads
 
-        # Predict and store results
-        for uploaded_file in st.session_state.uploaded_files:
+        # Process and predict for each uploaded file
+        for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
             processed_image = preprocess_image(image)
 
@@ -98,7 +89,7 @@ elif choice == "Prediksi":
             accuracy = np.max(predictions) * 100
             color_name = label_map[predicted_label]
 
-            # Store result
+            # Save result
             st.session_state.results.append(
                 {
                     "file_name": uploaded_file.name,
@@ -108,7 +99,7 @@ elif choice == "Prediksi":
                 }
             )
 
-    # Display results
+    # Display results if available
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
         for result in st.session_state.results:
