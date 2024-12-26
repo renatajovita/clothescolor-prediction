@@ -5,6 +5,9 @@ from PIL import Image
 import gdown
 import os
 
+# Navigation configuration (this must be the first Streamlit command)
+st.set_page_config(page_title="Klasifikasi Warna Matos Fashion", layout="wide")
+
 # URL Google Drive
 MODEL_URL = "https://drive.google.com/uc?id=1bpm2Gp_qVqsBIMHw-kRlzHX0e3QNie70"
 MODEL_PATH = "color_model.h5"
@@ -28,7 +31,6 @@ def preprocess_image(image):
     return np.expand_dims(image, axis=0)
 
 # Navigation
-st.set_page_config(page_title="Klasifikasi Warna Matos Fashion", layout="wide")
 menu = ["Overview", "Prediksi"]
 choice = st.sidebar.selectbox("Navigasi", menu)
 
