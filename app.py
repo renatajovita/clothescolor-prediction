@@ -32,9 +32,9 @@ def preprocess_image(image):
 
 # Initialize session state
 if "uploaded_files" not in st.session_state:
-    st.session_state.uploaded_files = None
+    st.session_state.uploaded_files = []
 if "results" not in st.session_state:
-    st.session_state.results = None
+    st.session_state.results = []
 
 # Navigation
 menu = ["Overview", "Prediksi"]
@@ -68,7 +68,7 @@ elif choice == "Prediksi":
         accept_multiple_files=True
     )
 
-    # Update session state with new uploaded files
+    # Add new uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
         st.session_state.results = []  # Reset previous results
@@ -104,6 +104,6 @@ elif choice == "Prediksi":
 
     # Clear uploaded files and results
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = None  # Clear the list of uploaded files
-        st.session_state.results = None  # Clear the results
+        st.session_state.uploaded_files.clear()  # Clear the list of uploaded files
+        st.session_state.results.clear()  # Clear the results
         st.experimental_rerun()  # Reload the app
