@@ -54,8 +54,8 @@ if choice == "Overview":
 
     # Button to navigate to prediction page
     if st.button("Coba Prediksi Sekarang"):
-        # Update query parameter to navigate to prediction page
-        st.query_params.page = "Prediksi"
+        # Update query parameter to navigate to the prediction page
+        st.query_params.from_dict({"page": "Prediksi"})
 
 # Prediction page
 elif choice == "Prediksi":
