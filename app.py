@@ -5,14 +5,14 @@ from PIL import Image
 import gdown
 import os
 
-# Navigation configuration (this must be the first Streamlit command)
+# Set page configuration
 st.set_page_config(page_title="Klasifikasi Warna Matos Fashion", layout="wide")
 
-# URL Google Drive
+# Google Drive model link and path
 MODEL_URL = "https://drive.google.com/uc?id=1bpm2Gp_qVqsBIMHw-kRlzHX0e3QNie70"
 MODEL_PATH = "color_model.h5"
 
-# Download the model if it doesn't exist
+# Download the model if not present
 if not os.path.exists(MODEL_PATH):
     with st.spinner("Mengunduh model..."):
         gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
@@ -24,19 +24,19 @@ model = tf.keras.models.load_model(MODEL_PATH)
 # Map label indices to color names
 label_map = {0: 'Merah', 1: 'Kuning', 2: 'Biru', 3: 'Hitam', 4: 'Putih'}
 
-# Function to preprocess images
+# Function to preprocess the image
 def preprocess_image(image):
     image = image.resize((224, 224))
-    image = np.array(image) / 255.0  # Normalize to [0, 1]
+    image = np.array(image) / 255.0  # Normalize
     return np.expand_dims(image, axis=0)
 
-# Initialize session states for handling files and results
+# Initialize session states for uploaded files and results
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = None
 if "results" not in st.session_state:
     st.session_state.results = []
 
-# Navigation
+# Navigation menu
 menu = ["Overview", "Prediksi"]
 choice = st.sidebar.selectbox("Navigasi", menu)
 
@@ -45,13 +45,12 @@ if choice == "Overview":
     st.title("Sistem Klasifikasi Warna Matos Fashion")
     st.markdown(
         """
-        Matos Fashion menghadirkan inovasi klasifikasi otomatis warna pakaian
-        menggunakan kecerdasan buatan. Sistem ini membantu:
+        Sistem klasifikasi otomatis warna pakaian menggunakan kecerdasan buatan:
         - Mempermudah pengelolaan inventaris.
-        - Memberikan pengalaman belanja yang lebih baik kepada pelanggan.
-        - Menyediakan analisis akurat untuk warna produk (Merah, Kuning, Biru, Hitam, Putih).
+        - Memberikan pengalaman belanja yang lebih baik.
+        - Menyediakan analisis akurat untuk warna produk: Merah, Kuning, Biru, Hitam, Putih.
 
-        Klik tombol di bawah ini untuk mencoba fitur prediksi warna pakaian.
+        Klik tombol di bawah untuk mencoba fitur prediksi.
         """
     )
     if st.button("Coba Prediksi Warna"):
@@ -61,35 +60,36 @@ if choice == "Overview":
 elif choice == "Prediksi":
     st.title("Prediksi Warna Pakaian")
 
-    # Handle "Hapus Gambar" button
+    # Button to reset predictions and clear results
     if st.button("Hapus Gambar"):
-        st.session_state.uploaded_files = None
-        st.session_state.results = []
-        st.experimental_rerun()  # Reload the page to clear all predictions
+        st.session_state.uploaded_files = None  # Clear uploaded files
+        st.session_state.results = []  # Clear results
+        st.success("Semua gambar dan hasil prediksi telah dihapus. Silakan unggah gambar baru.")
 
-    # File uploader
+    # File uploader for images
     uploaded_files = st.file_uploader(
-        "Unggah gambar pakaian (Maksimal 10 gambar)",
-        type=["jpg", "jpeg", "png"],
+        "Unggah gambar pakaian (Maksimal 10 gambar)", 
+        type=["jpg", "jpeg", "png"], 
         accept_multiple_files=True
     )
 
+    # Save uploaded files to session state
     if uploaded_files:
         st.session_state.uploaded_files = uploaded_files
-        st.session_state.results = []  # Clear previous results for new uploads
+        st.session_state.results = []  # Reset results for new uploads
 
-        # Process and predict for each uploaded file
+        # Process each uploaded file
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file)
             processed_image = preprocess_image(image)
 
-            # Perform prediction
+            # Model prediction
             predictions = model.predict(processed_image)
             predicted_label = np.argmax(predictions)
             accuracy = np.max(predictions) * 100
             color_name = label_map[predicted_label]
 
-            # Save result
+            # Save results in session state
             st.session_state.results.append(
                 {
                     "file_name": uploaded_file.name,
@@ -99,7 +99,7 @@ elif choice == "Prediksi":
                 }
             )
 
-    # Display results if available
+    # Display predictions if results exist
     if st.session_state.results:
         st.markdown("### Hasil Prediksi")
         for result in st.session_state.results:
