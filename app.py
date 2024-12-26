@@ -75,7 +75,6 @@ elif choice == "Prediksi":
     if uploaded_files is None or len(uploaded_files) != len(st.session_state.uploaded_files):
         st.session_state.uploaded_files = []  # Clear uploaded files
         st.session_state.results = []  # Clear predictions
-        st.info("Semua gambar dan hasil prediksi telah direset karena file dihapus.")
 
     # Save uploaded files to session state
     if uploaded_files:
