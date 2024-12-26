@@ -51,10 +51,10 @@ if choice == "Overview":
         - Menyediakan analisis akurat untuk warna produk: Merah, Kuning, Biru, Hitam, Putih.
         """
     )
-    
+
     # Button to navigate to prediction page
     if st.button("Coba Prediksi Sekarang"):
-        # Set the query parameters to navigate to the prediction page
+        # Set the query parameter to navigate to prediction page
         st.experimental_set_query_params(page="Prediksi")
 
 # Prediction page
