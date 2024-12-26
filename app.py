@@ -54,7 +54,8 @@ if choice == "Overview":
     
     # Button to navigate to prediction page
     if st.button("Coba Prediksi Sekarang"):
-        st.query_params(page="Prediksi")
+        # Set the query parameters to navigate to the prediction page
+        st.experimental_set_query_params(page="Prediksi")
 
 # Prediction page
 elif choice == "Prediksi":
