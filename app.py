@@ -26,18 +26,20 @@ label_map = {0: 'Merah', 1: 'Kuning', 2: 'Biru', 3: 'Hitam', 4: 'Putih'}
 
 # Function to preprocess the image
 def preprocess_image(image):
-    # Resize to 224x224
+    # Resize image
     image = image.resize((224, 224))
     
-    # Convert to numpy array and scale pixel values
-    image = np.array(image) / 255.0  # Scale to [0, 1]
-    
-    # Normalize using ImageNet mean and std
+    # Convert to RGB to ensure 3 channels
+    image = image.convert("RGB")
+
+    # Convert to numpy and scale
+    image = np.array(image).astype(np.float32) / 255.0
+
+    # Normalize with ImageNet mean and std
     mean = np.array([0.485, 0.456, 0.406])
     std = np.array([0.229, 0.224, 0.225])
-    image = (image - mean) / std  # Normalization
-    
-    # Expand dimensions to match model input
+    image = (image - mean) / std
+
     return np.expand_dims(image, axis=0)
 
 # Initialize session states for uploaded files and results
